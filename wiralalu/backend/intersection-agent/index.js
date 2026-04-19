@@ -75,6 +75,10 @@ const intersectionFlow = ai.defineFlow(
   }
 );
 
+app.get('/', (req, res) => {
+  res.send('WiraLalu Intersection Agent is ONLINE. Use POST /decide to interact.');
+});
+
 app.post('/decide', async (req, res) => {
   try {
     const result = await intersectionFlow(req.body);

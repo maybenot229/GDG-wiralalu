@@ -70,6 +70,10 @@ const cityOrchestrationFlow = ai.defineFlow(
   }
 );
 
+app.get('/', (req, res) => {
+  res.send('WiraLalu City Orchestrator is ONLINE. Use POST /orchestrate to interact.');
+});
+
 app.post('/orchestrate', async (req, res) => {
   try {
     const result = await cityOrchestrationFlow(req.body);
