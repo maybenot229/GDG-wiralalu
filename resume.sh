@@ -1,17 +1,25 @@
 #!/bin/bash
 
 # WiraLalu Resume Script
-# Scales all Cloud Run services back to 1 instance for zero-latency.
+# 1. Scales Cloud Run to 1
+# 2. Restores Pub/Sub endpoints
 
-SERVICES=("wiralalu-agent" "wiralalu-orchestrator" "wiralalu-dashboard")
 REGION="asia-southeast1"
+PROJECT_ID=$(gcloud config get-value project)
 
-echo "▶️ Resuming WiraLalu services for maximum performance..."
+echo "▶️ Resuming WiraLalu services..."
 
-for SERVICE in "${SERVICES[@]}"
-do
-  echo "--- Scaling $SERVICE to 1 ---"
-  gcloud run services update $SERVICE --min-instances 1 --region $REGION --quiet
-done
+# Restore Agent
+gcloud run services update wiralalu-agent --min-instances 1 --region $REGION --quiet
+AGENT_URL=$(gcloud run services describe wiralalu-agent --region $REGION --format='value(status.url)')
+gcloud pubsub subscriptions update wiralalu-agent-sub --push-endpoint="$AGENT_URL/decide" --quiet
 
-echo "✅ All services resumed. Ready for demo/judging!"
+# Restore Orchestrator
+gcloud run services update wiralalu-orchestrator --min-instances 1 --region $REGION --quiet
+ORCH_URL=$(gcloud run services describe wiralalu-orchestrator --region $REGION --format='value(status.url)')
+gcloud pubsub subscriptions update wiralalu-orchestrator-sub --push-endpoint="$ORCH_URL/orchestrate" --quiet
+
+# Restore Dashboard
+gcloud run services update wiralalu-dashboard --min-instances 1 --region $REGION --quiet
+
+echo "✅ All services resumed and Pub/Sub restored!"

@@ -48,4 +48,4 @@ Unlike traditional algorithms, WiraLalu uses a tiered multi-agent system:
 - All reasoning logic and agentic loops were engineered to align with the Malaysia Madani framework and National Industrial Master Plan 2030.
 
 ---
-*Built for Malaysia. By Sovereign Tech Builders.*
+*Built for Malaysia. By TEAM liuqi.*
