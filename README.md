@@ -2,7 +2,7 @@
 
 **Track:** Green Horizon (Smart Cities & Mobility)  
 **Submission:** Project 2030: MyAI Future Hackathon  
-**Live Demo:** [Insert Your Cloud Run Link Here]
+**Live Demo:** (https://wiralalu-dashboard-125182274182.asia-southeast1.run.app/)
 
 ## 🚀 The Vision
 WiraLalu transforms Malaysia's traffic management from a "sensor-response" model into an **Agentic AI Orchestrator**. Built to handle the unique "Urban DNA" of Malaysian cities—such as high motorcycle volumes and frequent flash floods—WiraLalu ensures traffic flows intelligently, prioritizing public transport and emergency services autonomously.
