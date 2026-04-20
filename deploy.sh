@@ -32,4 +32,14 @@ gcloud run deploy wiralalu-orchestrator \
   --min-instances 1 \
   --set-env-vars GOOGLE_CLOUD_PROJECT=$PROJECT_ID
 
-echo "✅ Deployment Complete!"
+# 3. Deploy Frontend Dashboard
+echo "--- Deploying Frontend Dashboard ---"
+cd ../../frontend/dashboard
+gcloud builds submit --tag gcr.io/$PROJECT_ID/wiralalu-dashboard
+gcloud run deploy wiralalu-dashboard \
+  --image gcr.io/$PROJECT_ID/wiralalu-dashboard \
+  --platform managed \
+  --region $REGION \
+  --allow-unauthenticated
+
+echo "✅ All Services Deployed!"

@@ -97,14 +97,14 @@ const App: React.FC = () => {
       <div className="grid">
         <main className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <h2>Intersection Thought Logs</h2>
-            <div style={{ fontSize: '0.8rem', color: '#38bdf8' }}>● Live Reasoning</div>
+            <h2>AI Agent Event Log</h2>
+            <div style={{ fontSize: '0.8rem', color: '#38bdf8' }}>● Real-time Orchestration</div>
           </div>
           <div className="thought-log">
             {logs.map(log => (
               <div key={log.id} className="thought-log-item">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong>{log.intersection} Node</strong>
+                  <strong>[{log.timestamp}] Node: {log.intersection}</strong>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <div style={{ 
                       width: '10px', height: '10px', borderRadius: '50%', 
@@ -129,10 +129,17 @@ const App: React.FC = () => {
         </main>
 
         <aside className="control-panel">
+          <div className="card" style={{ border: '1px solid #38bdf8' }}>
+            <h2 style={{ color: '#38bdf8', fontSize: '1rem', margin: 0 }}>SYSTEM ORCHESTRATION HUB</h2>
+            <button className="btn btn-primary" style={{ width: '100%', marginTop: '1.5rem', boxShadow: '0 0 15px rgba(0, 198, 255, 0.4)' }}>
+              ACCESS DECISION HISTORY LOG
+            </button>
+          </div>
+
           <div className="card">
             <h3>City Digital Twin: KK</h3>
             <div style={{ 
-              height: '300px', 
+              height: '350px', 
               background: 'rgba(0,0,0,0.4)', 
               borderRadius: '12px', 
               margin: '1rem 0',
@@ -140,40 +147,60 @@ const App: React.FC = () => {
               border: '1px solid rgba(255,255,255,0.1)',
               overflow: 'hidden'
             }}>
+              {/* On-Map Metrics Overlay */}
+              <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                 <div style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(0,0,0,0.6)', borderRadius: '4px', border: '1px solid #10b981' }}>
+                    <span style={{ color: '#94a3b8' }}>FLOOD:</span> <span style={{ color: isFloodSimulated ? '#ef4444' : '#10b981' }}>{isFloodSimulated ? "1.8m" : "0.2m"}</span>
+                 </div>
+                 <div style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(0,0,0,0.6)', borderRadius: '4px', border: '1px solid #38bdf8' }}>
+                    <span style={{ color: '#94a3b8' }}>FIELD:</span> <span style={{ color: '#38bdf8' }}>98.4%</span>
+                 </div>
+              </div>
+
               {/* Stylized Road Network SVG */}
               <svg width="100%" height="100%" viewBox="0 0 200 200" style={{ position: 'absolute', top: 0, left: 0 }}>
                 {/* Arterial Roads */}
                 <path d="M20 100 Q 100 80 180 100" stroke="rgba(56, 189, 248, 0.2)" strokeWidth="4" fill="none" />
                 <path d="M100 20 Q 120 100 100 180" stroke="rgba(56, 189, 248, 0.2)" strokeWidth="4" fill="none" />
-                <path d="M40 40 L 160 160" stroke="rgba(56, 189, 248, 0.1)" strokeWidth="2" fill="none" />
-                <path d="M40 160 L 160 40" stroke="rgba(56, 189, 248, 0.1)" strokeWidth="2" fill="none" />
                 
-                {/* Coastal Road */}
-                <path d="M10 20 Q 50 50 20 180" stroke="#38bdf8" strokeWidth="1" strokeDasharray="4 2" fill="none" opacity="0.4" />
+                {/* Submerged Streets with Power Failure Warning */}
+                {isFloodSimulated && (
+                  <>
+                    <circle cx="40" cy="150" r="2" fill="#ef4444" />
+                    <text x="45" y="152" fill="#ef4444" style={{ fontSize: '4px', fontWeight: 700 }}>POWER FAILURE</text>
+                    <circle cx="160" cy="50" r="2" fill="#ef4444" />
+                    <text x="130" y="45" fill="#ef4444" style={{ fontSize: '4px', fontWeight: 700 }}>SUBMERGED</text>
+                  </>
+                )}
               </svg>
 
-              {/* Positioned Nodes */}
-              <div style={{ position: 'absolute', top: '45%', left: '45%' }}>
-                <div className={`map-node ${activeIntersection === "Gaya Street" ? 'active' : ''} ${isEmergencyActive && activeIntersection === "Gaya Street" ? 'emergency' : ''}`} style={{ width: '60px' }}>Gaya St</div>
-              </div>
-              <div style={{ position: 'absolute', top: '20%', left: '20%' }}>
-                <div className={`map-node ${activeIntersection === "Waterfront" ? 'active' : ''}`} style={{ width: '60px' }}>Waterfront</div>
-              </div>
-              <div style={{ position: 'absolute', top: '15%', left: '65%' }}>
-                <div className={`map-node ${activeIntersection === "Likas" ? 'active' : ''}`} style={{ width: '60px' }}>Likas Bay</div>
-              </div>
-              <div style={{ position: 'absolute', top: '75%', left: '30%' }}>
-                <div className={`map-node ${activeIntersection === "Penampang" ? 'active' : ''}`} style={{ width: '65px' }}>Penampang</div>
-              </div>
-              <div style={{ position: 'absolute', top: '70%', left: '70%' }}>
-                <div className={`map-node ${activeIntersection === "Inanam" ? 'active' : ''}`} style={{ width: '60px' }}>Inanam</div>
-              </div>
-              <div style={{ position: 'absolute', top: '40%', left: '10%' }}>
-                <div className={`map-node ${activeIntersection === "Kolombong" ? 'active' : ''}`} style={{ width: '65px' }}>Kolombong</div>
-              </div>
+              {/* Positioned Nodes with Holographic Arrays */}
+              {[
+                { name: "Gaya Street", top: '45%', left: '45%' },
+                { name: "Waterfront", top: '20%', left: '20%' },
+                { name: "Likas", top: '15%', left: '65%' },
+                { name: "Penampang", top: '75%', left: '30%' },
+                { name: "Inanam", top: '70%', left: '70%' },
+                { name: "Kolombong", top: '40%', left: '10%' }
+              ].map(node => (
+                <div key={node.name} style={{ position: 'absolute', top: node.top, left: node.left, textAlign: 'center' }}>
+                  {/* Holographic Vertical Light Array */}
+                  <div style={{ 
+                    width: '2px', 
+                    height: '20px', 
+                    background: 'linear-gradient(transparent, #38bdf8, transparent)', 
+                    margin: '0 auto',
+                    opacity: activeIntersection === node.name ? 1 : 0.3,
+                    boxShadow: activeIntersection === node.name ? '0 0 10px #38bdf8' : 'none'
+                  }}></div>
+                  <div className={`map-node ${activeIntersection === node.name ? 'active' : ''} ${isEmergencyActive && node.name === "Gaya Street" ? 'emergency' : ''}`} style={{ width: '60px', fontSize: '0.5rem' }}>
+                    {node.name}
+                  </div>
+                </div>
+              ))}
             </div>
             <p style={{ fontSize: '0.75rem', color: '#94a3b8', textAlign: 'center' }}>
-              Real-time topology of Kota Kinabalu Arteries.
+              KK Digital Twin: Active Holographic Grid & Infrastructure Monitoring.
             </p>
           </div>
 
@@ -193,6 +220,28 @@ const App: React.FC = () => {
               >
                 {isEmergencyActive ? "Clear Emergency" : "Trigger Ambulance Siren"}
               </button>
+            </div>
+          </div>
+
+          <div className="card">
+            <h3>Live Environment Metrics</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '1rem' }}>
+              <div className="metric-box">
+                <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>FLOOD DEPTH</div>
+                <div style={{ color: isFloodSimulated ? '#ef4444' : '#10b981', fontWeight: 700 }}>{isFloodSimulated ? "1.8m" : "0.2m"}</div>
+              </div>
+              <div className="metric-box">
+                <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>FIELD STABILITY</div>
+                <div style={{ color: '#10b981', fontWeight: 700 }}>98.4%</div>
+              </div>
+              <div className="metric-box">
+                <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>PEDESTRIAN DENSITY</div>
+                <div style={{ color: '#38bdf8', fontWeight: 700 }}>4.2/m²</div>
+              </div>
+              <div className="metric-box">
+                <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>EMERGENCY ETA</div>
+                <div style={{ color: isEmergencyActive ? '#ef4444' : '#94a3b8', fontWeight: 700 }}>{isEmergencyActive ? "2.5 min" : "N/A"}</div>
+              </div>
             </div>
           </div>
 
