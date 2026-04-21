@@ -14,7 +14,9 @@ const App: React.FC = () => {
   const [logs, setLogs] = useState<ThoughtLog[]>([]);
   const [isFloodSimulated, setIsFloodSimulated] = useState(false);
   const [isEmergencyActive, setIsEmergencyActive] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [activeIntersection, setActiveIntersection] = useState<string | null>(null);
+  const [metrics, setMetrics] = useState({ flood: 0.2, stability: 98.4, density: 4.2 });
 
   // Simulated live updates for the hackathon demo
   useEffect(() => {
@@ -27,14 +29,21 @@ const App: React.FC = () => {
 
       setActiveIntersection(selectedIntersection);
 
+      // Dynamic Metrics Update
+      setMetrics({
+        flood: isFloodSimulated ? (selectedIntersection === "Likas" ? 2.1 : 0.8) : 0.2,
+        stability: isFloodSimulated ? 85.2 : 98.4,
+        density: scenarioIdx === 2 ? 8.5 : 4.2
+      });
+
       let action = "MAINTAIN";
       let reasoning = "";
       let rejected = "";
 
-      if (isFloodSimulated) {
+      if (isFloodSimulated && (selectedIntersection === "Likas" || selectedIntersection === "Waterfront")) {
         action = "EMERGENCY_CLEAR";
-        reasoning = `Water is rising too high at ${selectedIntersection}. I am clearing all cars now to prevent stalling.`;
-        rejected = "Stay on normal timer. Rejected because it's too dangerous for small cars.";
+        reasoning = `Likas Bay water levels are critical at ${metrics.flood}m. Clearing all lanes at ${selectedIntersection} to avoid total gridlock.`;
+        rejected = "Keep light green. Rejected because stalled cars would block emergency drainage access.";
       } else if (isEmergencyActive && randomIdx === 0) {
         action = "FORCE_GREEN";
         reasoning = "I hear an ambulance siren! I'm turning all lights green on this path to let it through fast.";
@@ -59,7 +68,7 @@ const App: React.FC = () => {
           {
             a: "EXTEND_GREEN",
             r: "Coordinating with Penampang node. Creating a 'Green Wave' so cars don't have to stop and waste fuel.",
-            rj: "Let them stop. Rejected because idling engines cause more air pollution."
+            rj: "Let them stop. Rejected because idling engines are bad for Sabah's air quality."
           }
         ];
         action = normalScenarios[scenarioIdx].a;
@@ -75,106 +84,60 @@ const App: React.FC = () => {
         rejectedAlternative: rejected,
         timestamp: new Date().toLocaleTimeString(),
       };
-      setLogs(prev => [newLog, ...prev].slice(0, 8));
+      setLogs(prev => [newLog, ...prev].slice(0, 30));
 
       // Clear highlight after 2 seconds
       setTimeout(() => setActiveIntersection(null), 2000);
     }, 3000);
 
     return () => clearInterval(mockUpdates);
-  }, [isFloodSimulated, isEmergencyActive]);
+  }, [isFloodSimulated, isEmergencyActive, metrics.flood]);
 
   return (
     <div className="dashboard-container">
-      <header className="header">
-        <h1 className="title">WiraLalu Dashboard</h1>
-        <div style={{ textAlign: 'right' }}>
-          <div className="status-badge">Region: Kota Kinabalu, Sabah</div>
-          <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '4px' }}>Agentic Orchestration Active</div>
-        </div>
-      </header>
-
-      <div className="grid">
-        <main className="card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <h2>AI Agent Event Log</h2>
-            <div style={{ fontSize: '0.8rem', color: '#38bdf8' }}>● Real-time Orchestration</div>
-          </div>
-          <div className="thought-log">
-            {logs.map(log => (
-              <div key={log.id} className="thought-log-item">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong>[{log.timestamp}] Node: {log.intersection}</strong>
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <div style={{ 
-                      width: '10px', height: '10px', borderRadius: '50%', 
-                      background: log.action === 'FORCE_RED' ? '#ef4444' : '#10b981',
-                      boxShadow: log.action === 'FORCE_RED' ? '0 0 8px #ef4444' : '0 0 8px #10b981'
-                    }}></div>
-                    <span style={{ 
-                      color: log.action === 'EMERGENCY_CLEAR' || log.action === 'FORCE_GREEN' ? '#10b981' : '#38bdf8',
-                      fontWeight: 700,
-                      fontSize: '0.8rem'
-                    }}>{log.action}</span>
-                  </div>
-                </div>
-                <div className="reasoning-box">{log.reasoning}</div>
-                <div className="counterfactual">
-                  <div className="counterfactual-title">Rejected Alternative</div>
-                  <div className="counterfactual-text">{log.rejectedAlternative}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </main>
-
-        <aside className="control-panel">
-          <div className="card" style={{ border: '1px solid #38bdf8' }}>
-            <h2 style={{ color: '#38bdf8', fontSize: '1rem', margin: 0 }}>SYSTEM ORCHESTRATION HUB</h2>
-            <button className="btn btn-primary" style={{ width: '100%', marginTop: '1.5rem', boxShadow: '0 0 15px rgba(0, 198, 255, 0.4)' }}>
-              ACCESS DECISION HISTORY LOG
-            </button>
-          </div>
-
-          <div className="card">
-            <h3>City Digital Twin: KK</h3>
+      {/* ... Modal and Header code ... */}
+      
+      <div className="strategic-grid">
+        {/* Left: Huge Map */}
+        <main className="map-area">
+          <div className="card" style={{ height: 'calc(100vh - 180px)', position: 'relative' }}>
+            <h3>City Digital Twin: KK (Strategic View)</h3>
             <div style={{ 
-              height: '350px', 
+              height: '90%', 
               background: 'rgba(0,0,0,0.4)', 
               borderRadius: '12px', 
-              margin: '1rem 0',
               position: 'relative',
               border: '1px solid rgba(255,255,255,0.1)',
               overflow: 'hidden'
             }}>
               {/* On-Map Metrics Overlay */}
-              <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                 <div style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(0,0,0,0.6)', borderRadius: '4px', border: '1px solid #10b981' }}>
-                    <span style={{ color: '#94a3b8' }}>FLOOD:</span> <span style={{ color: isFloodSimulated ? '#ef4444' : '#10b981' }}>{isFloodSimulated ? "1.8m" : "0.2m"}</span>
+              <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10, display: 'flex', gap: '8px' }}>
+                 <div style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(0,0,0,0.8)', borderRadius: '4px', border: '1px solid #10b981' }}>
+                    <span style={{ color: '#94a3b8' }}>FLOOD:</span> <span style={{ color: metrics.flood > 1.0 ? '#ef4444' : '#10b981', fontWeight: 800 }}>{metrics.flood}m</span>
                  </div>
-                 <div style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(0,0,0,0.6)', borderRadius: '4px', border: '1px solid #38bdf8' }}>
-                    <span style={{ color: '#94a3b8' }}>FIELD:</span> <span style={{ color: '#38bdf8' }}>98.4%</span>
+                 <div style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(0,0,0,0.8)', borderRadius: '4px', border: '1px solid #38bdf8' }}>
+                    <span style={{ color: '#94a3b8' }}>FIELD:</span> <span style={{ color: '#38bdf8', fontWeight: 800 }}>{metrics.stability}%</span>
                  </div>
               </div>
 
-              {/* Stylized Road Network SVG */}
+              {/* Pedestrian Dots Distributed across KK */}
+              {[
+                {t:'48%', l:'42%'}, {t:'52%', l:'48%'}, {t:'25%', l:'22%'}, 
+                {t:'18%', l:'60%'}, {t:'70%', l:'35%'}, {t:'65%', l:'68%'}
+              ].map((pos, i) => (
+                <div key={i} className="pedestrian-dot" style={{ position: 'absolute', top: pos.t, left: pos.l, zIndex: 5 }}></div>
+              ))}
+
+              {/* ... SVG Background ... */}
               <svg width="100%" height="100%" viewBox="0 0 200 200" style={{ position: 'absolute', top: 0, left: 0 }}>
-                {/* Arterial Roads */}
                 <path d="M20 100 Q 100 80 180 100" stroke="rgba(56, 189, 248, 0.2)" strokeWidth="4" fill="none" />
                 <path d="M100 20 Q 120 100 100 180" stroke="rgba(56, 189, 248, 0.2)" strokeWidth="4" fill="none" />
-                
-                {/* Submerged Streets with Power Failure Warning */}
                 {isFloodSimulated && (
-                  <>
-                    <circle cx="40" cy="150" r="2" fill="#ef4444" />
-                    <text x="45" y="152" fill="#ef4444" style={{ fontSize: '4px', fontWeight: 700 }}>POWER FAILURE</text>
-                    <circle cx="160" cy="50" r="2" fill="#ef4444" />
-                    <text x="130" y="45" fill="#ef4444" style={{ fontSize: '4px', fontWeight: 700 }}>SUBMERGED</text>
-                  </>
+                  <circle cx="40" cy="150" r="2" fill="#ef4444" />
                 )}
               </svg>
 
-              {/* Positioned Nodes with Holographic Arrays */}
+              {/* Holographic Nodes (Green/Red) */}
               {[
                 { name: "Gaya Street", top: '45%', left: '45%' },
                 { name: "Waterfront", top: '20%', left: '20%' },
@@ -182,76 +145,68 @@ const App: React.FC = () => {
                 { name: "Penampang", top: '75%', left: '30%' },
                 { name: "Inanam", top: '70%', left: '70%' },
                 { name: "Kolombong", top: '40%', left: '10%' }
-              ].map(node => (
-                <div key={node.name} style={{ position: 'absolute', top: node.top, left: node.left, textAlign: 'center' }}>
-                  {/* Holographic Vertical Light Array */}
-                  <div style={{ 
-                    width: '2px', 
-                    height: '20px', 
-                    background: 'linear-gradient(transparent, #38bdf8, transparent)', 
-                    margin: '0 auto',
-                    opacity: activeIntersection === node.name ? 1 : 0.3,
-                    boxShadow: activeIntersection === node.name ? '0 0 10px #38bdf8' : 'none'
-                  }}></div>
-                  <div className={`map-node ${activeIntersection === node.name ? 'active' : ''} ${isEmergencyActive && node.name === "Gaya Street" ? 'emergency' : ''}`} style={{ width: '60px', fontSize: '0.5rem' }}>
-                    {node.name}
+              ].map(node => {
+                const isRed = logs.length > 0 && logs[0].intersection === node.name && logs[0].action === "FORCE_RED";
+                const isEmergency = isEmergencyActive && node.name === "Gaya Street";
+                return (
+                  <div key={node.name} style={{ position: 'absolute', top: node.top, left: node.left, textAlign: 'center' }}>
+                    <div style={{ 
+                      width: '2px', height: '25px', 
+                      background: isRed ? 'linear-gradient(transparent, #ef4444, transparent)' : 'linear-gradient(transparent, #10b981, transparent)', 
+                      margin: '0 auto',
+                      opacity: activeIntersection === node.name ? 1 : 0.3,
+                      boxShadow: activeIntersection === node.name ? (isRed ? '0 0 15px #ef4444' : '0 0 15px #10b981') : 'none'
+                    }}></div>
+                    <div className={`map-node ${activeIntersection === node.name ? 'active' : ''} ${isEmergency ? 'emergency' : ''} ${isRed ? 'red-light' : ''}`}>
+                      {node.name}
+                    </div>
                   </div>
+                );
+              })}
+            </div>
+          </div>
+        </main>
+
+        {/* Right: Simulation and Compact Latest Decision */}
+        <aside className="control-sidebar">
+          <div className="card" style={{ border: '1px solid #38bdf8', padding: '0.8rem' }}>
+            <h2 style={{ color: '#38bdf8', fontSize: '0.8rem', margin: '0 0 0.5rem 0' }}>SYSTEM HUB</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px' }}>
+              <button className={`btn ${isFloodSimulated ? 'btn-primary' : 'btn-danger'}`} style={{ fontSize: '0.7rem' }} onClick={() => setIsFloodSimulated(!isFloodSimulated)}>
+                {isFloodSimulated ? "Reset" : "Flood"}
+              </button>
+              <button className={`btn ${isEmergencyActive ? 'btn-primary' : 'btn-danger'}`} style={{ fontSize: '0.7rem', borderColor: '#10b981' }} onClick={() => setIsEmergencyActive(!isEmergencyActive)}>
+                {isEmergencyActive ? "Normal" : "Ambulance"}
+              </button>
+            </div>
+          </div>
+
+          {/* COMPACT ACTIVE DECISION */}
+          {logs.length > 0 && (
+            <div className="card active-decision" style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf8', padding: '0.8rem' }}>
+              <div style={{ fontSize: '0.7rem', fontWeight: 800, marginBottom: '0.3rem', color: '#38bdf8' }}>
+                {logs[0].intersection.toUpperCase()} NODE → <span style={{ color: logs[0].action.includes('EMERGENCY') || logs[0].action === "FORCE_RED" ? '#ef4444' : '#10b981' }}>{logs[0].action}</span>
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#fff', marginBottom: '0.3rem', lineHeight: '1.3' }}>
+                {logs[0].reasoning}
+              </div>
+              <div style={{ borderTop: '1px solid rgba(56, 189, 248, 0.2)', paddingTop: '0.3rem', fontSize: '0.65rem' }}>
+                <span style={{ color: '#fbbf24', fontWeight: 700 }}>REJECTED:</span> {logs[0].rejectedAlternative}
+              </div>
+            </div>
+          )}
+
+          {/* Event Stream */}
+          <div className="card" style={{ flex: 1, padding: '0.8rem' }}>
+            <h3 style={{ fontSize: '0.7rem', marginBottom: '0.3rem' }}>Events</h3>
+            <div style={{ fontSize: '0.6rem' }}>
+              {logs.slice(1, 6).map(l => (
+                <div key={l.id} style={{ padding: '3px 0', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between' }}>
+                  <span>{l.intersection}</span>
+                  <span style={{ color: l.action === "FORCE_RED" ? "#ef4444" : "#10b981" }}>{l.action}</span>
                 </div>
               ))}
             </div>
-            <p style={{ fontSize: '0.75rem', color: '#94a3b8', textAlign: 'center' }}>
-              KK Digital Twin: Active Holographic Grid & Infrastructure Monitoring.
-            </p>
-          </div>
-
-          <div className="card">
-            <h3>Simulation Triggers</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <button 
-                className={`btn ${isFloodSimulated ? 'btn-primary' : 'btn-danger'}`}
-                onClick={() => setIsFloodSimulated(!isFloodSimulated)}
-              >
-                {isFloodSimulated ? "Reset to Normal" : "Simulate KK Flash Flood"}
-              </button>
-              <button 
-                className={`btn ${isEmergencyActive ? 'btn-primary' : 'btn-danger'}`}
-                style={{ borderColor: '#10b981', color: isEmergencyActive ? 'white' : '#10b981' }}
-                onClick={() => setIsEmergencyActive(!isEmergencyActive)}
-              >
-                {isEmergencyActive ? "Clear Emergency" : "Trigger Ambulance Siren"}
-              </button>
-            </div>
-          </div>
-
-          <div className="card">
-            <h3>Live Environment Metrics</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '1rem' }}>
-              <div className="metric-box">
-                <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>FLOOD DEPTH</div>
-                <div style={{ color: isFloodSimulated ? '#ef4444' : '#10b981', fontWeight: 700 }}>{isFloodSimulated ? "1.8m" : "0.2m"}</div>
-              </div>
-              <div className="metric-box">
-                <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>FIELD STABILITY</div>
-                <div style={{ color: '#10b981', fontWeight: 700 }}>98.4%</div>
-              </div>
-              <div className="metric-box">
-                <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>PEDESTRIAN DENSITY</div>
-                <div style={{ color: '#38bdf8', fontWeight: 700 }}>4.2/m²</div>
-              </div>
-              <div className="metric-box">
-                <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>EMERGENCY ETA</div>
-                <div style={{ color: isEmergencyActive ? '#ef4444' : '#94a3b8', fontWeight: 700 }}>{isEmergencyActive ? "2.5 min" : "N/A"}</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="card">
-            <h3>Sabah Urban DNA</h3>
-            <ul style={{ listStyle: 'none', padding: 0, color: '#94a3b8' }}>
-              <li>🏍️ Motorcycle Vol: 38%</li>
-              <li>🚌 Bus Priority: Enabled (Likas Line)</li>
-              <li>⚡ Latency (Flash): 115ms</li>
-            </ul>
           </div>
         </aside>
       </div>
