@@ -22,7 +22,7 @@ const App: React.FC = () => {
   // Simulated live updates for the hackathon demo
   useEffect(() => {
     const intersections = ["Gaya Street", "Waterfront", "Likas", "Penampang", "Inanam", "Kolombong"];
-    
+
     const mockUpdates = setInterval(() => {
       const randomIdx = Math.floor(Math.random() * intersections.length);
       const scenarioIdx = Math.floor(Math.random() * 4);
@@ -142,27 +142,27 @@ const App: React.FC = () => {
           <div style={{ fontSize: '0.75rem', color: '#38bdf8', marginTop: '4px', fontWeight: 800 }}>AGENTIC CORES: 04 ACTIVE</div>
         </div>
       </header>
-      
+
       <div className="strategic-grid">
         {/* Left: Huge Map */}
         <main className="map-area">
           <div className="card" style={{ height: 'calc(100vh - 180px)', position: 'relative' }}>
             <h3>City Digital Twin: KK (Strategic View)</h3>
-            <div style={{ 
-              height: '90%', 
+            <div style={{
+              height: '90%',
               background: 'radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)',
               backgroundColor: '#0f172a',
-              borderRadius: '12px', 
+              borderRadius: '12px',
               position: 'relative',
               border: '1px solid rgba(56, 189, 248, 0.2)',
               overflow: 'hidden'
             }}>
               {/* Digital Twin Grid Overlay */}
-              <div style={{ 
-                position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', 
+              <div style={{
+                position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
                 backgroundImage: 'linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px)',
                 backgroundSize: '20px 20px',
-                zIndex: 1 
+                zIndex: 1
               }}></div>
 
               {/* LIVE RADAR SWEEP */}
@@ -182,13 +182,13 @@ const App: React.FC = () => {
                 backgroundSize: '100% 4px, 3px 100%',
                 zIndex: 15, pointerEvents: 'none', opacity: 0.1
               }}></div>
-              
+
               {/* High Density Traffic Dots (Hidden during floods) */}
-              {!isFloodSimulated && Array.from({length: 60}).map((_, i) => (
-                <div key={i} className="pedestrian-dot" style={{ 
-                  position: 'absolute', 
-                  top: `${Math.random() * 80 + 10}%`, 
-                  left: `${Math.random() * 80 + 10}%`, 
+              {!isFloodSimulated && Array.from({ length: 60 }).map((_, i) => (
+                <div key={i} className="pedestrian-dot" style={{
+                  position: 'absolute',
+                  top: `${Math.random() * 80 + 10}%`,
+                  left: `${Math.random() * 80 + 10}%`,
                   zIndex: 5,
                   opacity: 0.4
                 }}></div>
@@ -198,13 +198,13 @@ const App: React.FC = () => {
               <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', top: 0, left: 0, zIndex: 2 }}>
                 {/* Coastal: Waterfront(20,20) -> Gaya(45,45) -> Likas(65,15) */}
                 <path d="M20 20 L 45 45 L 65 15" stroke="rgba(56, 189, 248, 0.6)" strokeWidth="1.5" fill="none" />
-                
+
                 {/* Interior: Kolombong(10,40) -> Gaya(45,45) -> Inanam(70,70) */}
                 <path d="M10 40 L 45 45 L 70 70" stroke="rgba(56, 189, 248, 0.5)" strokeWidth="1.5" fill="none" />
-                
+
                 {/* Penampang Link: Gaya(45,45) -> Penampang(30,75) */}
                 <path d="M45 45 L 30 75" stroke="rgba(56, 189, 248, 0.5)" strokeWidth="1.5" fill="none" />
-                
+
                 {/* Cross Connections */}
                 <path d="M20 20 L 10 40" stroke="rgba(56, 189, 248, 0.2)" strokeWidth="0.5" fill="none" />
                 <path d="M65 15 L 70 70" stroke="rgba(56, 189, 248, 0.2)" strokeWidth="0.5" fill="none" />
@@ -217,12 +217,12 @@ const App: React.FC = () => {
               </svg>
               {/* On-Map Metrics Overlay */}
               <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10, display: 'flex', gap: '8px' }}>
-                 <div style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(0,0,0,0.8)', borderRadius: '4px', border: '1px solid #10b981' }}>
-                    <span style={{ color: '#94a3b8' }}>FLOOD:</span> <span style={{ color: metrics.flood > 1.0 ? '#ef4444' : '#10b981', fontWeight: 800 }}>{metrics.flood}m</span>
-                 </div>
-                 <div style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(0,0,0,0.8)', borderRadius: '4px', border: '1px solid #38bdf8' }}>
-                    <span style={{ color: '#94a3b8' }}>FIELD:</span> <span style={{ color: '#38bdf8', fontWeight: 800 }}>{metrics.stability}%</span>
-                 </div>
+                <div style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(0,0,0,0.8)', borderRadius: '4px', border: '1px solid #10b981' }}>
+                  <span style={{ color: '#94a3b8' }}>FLOOD:</span> <span style={{ color: metrics.flood > 1.0 ? '#ef4444' : '#10b981', fontWeight: 800 }}>{metrics.flood}m</span>
+                </div>
+                <div style={{ fontSize: '0.6rem', padding: '4px 8px', background: 'rgba(0,0,0,0.8)', borderRadius: '4px', border: '1px solid #38bdf8' }}>
+                  <span style={{ color: '#94a3b8' }}>FIELD:</span> <span style={{ color: '#38bdf8', fontWeight: 800 }}>{metrics.stability}%</span>
+                </div>
               </div>
 
               {/* Live Disaster Warnings Overlay */}
@@ -239,8 +239,8 @@ const App: React.FC = () => {
 
               {/* Pedestrian Dots Distributed across KK (Hidden during floods) */}
               {!isFloodSimulated && [
-                {t:'48%', l:'42%'}, {t:'52%', l:'48%'}, {t:'25%', l:'22%'}, 
-                {t:'18%', l:'60%'}, {t:'70%', l:'35%'}, {t:'65%', l:'68%'}
+                { t: '48%', l: '42%' }, { t: '52%', l: '48%' }, { t: '25%', l: '22%' },
+                { t: '18%', l: '60%' }, { t: '70%', l: '35%' }, { t: '65%', l: '68%' }
               ].map((pos, i) => (
                 <div key={i} className="pedestrian-dot" style={{ position: 'absolute', top: pos.t, left: pos.l, zIndex: 5 }}></div>
               ))}
@@ -288,9 +288,9 @@ const App: React.FC = () => {
                       <span style={{ color: isRed ? '#ef4444' : '#10b981', fontSize: '12px', textShadow: '0 0 5px currentColor' }}>▲</span>
                       <span style={{ color: isRed ? '#ef4444' : '#10b981', fontSize: '12px', textShadow: '0 0 5px currentColor' }}>▼</span>
                     </div>
-                    <div style={{ 
-                      width: '3px', height: '30px', 
-                      background: isRed ? 'linear-gradient(transparent, #ef4444, transparent)' : 'linear-gradient(transparent, #10b981, transparent)', 
+                    <div style={{
+                      width: '3px', height: '30px',
+                      background: isRed ? 'linear-gradient(transparent, #ef4444, transparent)' : 'linear-gradient(transparent, #10b981, transparent)',
                       margin: '0 auto',
                       opacity: activeIntersection === node.name ? 1 : 0.4,
                       boxShadow: activeIntersection === node.name ? (isRed ? '0 0 20px #ef4444' : '0 0 20px #10b981') : 'none'
@@ -327,16 +327,16 @@ const App: React.FC = () => {
               </button>
             </div>
             <button className="btn btn-primary" onClick={() => setShowHistory(true)} style={{ width: '100%', marginTop: '0.8rem', fontSize: '0.65rem', border: '1px solid #38bdf8' }}>
-              ACCESS FULL HISTORY
+              EXPAND FULL LOG
             </button>
           </div>
 
           {/* 3 MOST RECENT DECISIONS */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {logs.slice(0, 3).map((log, index) => (
-              <div key={log.id} className="card active-decision" style={{ 
-                background: index === 0 ? 'rgba(56, 189, 248, 0.1)' : 'rgba(15, 23, 42, 0.8)', 
-                border: index === 0 ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)', 
+              <div key={log.id} className="card active-decision" style={{
+                background: index === 0 ? 'rgba(56, 189, 248, 0.1)' : 'rgba(15, 23, 42, 0.8)',
+                border: index === 0 ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
                 padding: '0.6rem',
                 opacity: index === 0 ? 1 : 0.7,
               }}>
@@ -373,11 +373,11 @@ const App: React.FC = () => {
             <h3 style={{ fontSize: '0.7rem', marginBottom: '0.5rem' }}>Sabah Urban DNA</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
               <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>
-                🏍️ Motor: 38%<br/>
+                🏍️ Motor: 38%<br />
                 🚌 Bus Pri: ON
               </div>
               <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>
-                👥 Density: {metrics.density}/m²<br/>
+                👥 Density: {metrics.density}/m²<br />
                 ⚡ Latency: 115ms
               </div>
             </div>
