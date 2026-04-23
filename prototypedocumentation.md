@@ -28,20 +28,21 @@ The system functions as a decentralized emergency responder. Upon detecting risi
 ## 5. System Architecture
 ```mermaid
 graph TD
-    %% Define the data flow clearly
+    %% Main Path
     Data["Urban Data/IoT Sensors"] --> IA["Intersection Agents"]
     IA --> O["Orchestrator Engine"]
     
-    %% Use sub-paths to prevent overlap
+    %% Decoupled bidirectional flow
     O -- "Negotiation/Logic" --> LLM["Gemini 1.5 Flash"]
     LLM -- "Decision" --> O
     
+    %% Other paths
     O -->|Execute| Lights["Traffic Signal Control"]
-    O -->|Update/Monitor| Dashboard["Strategic Control Center"]
+    O -->|Update/Monitor| Dash["Strategic Control Center"]
 
-    %% Add styling for clarity
+    %% Styling for professional look
     style LLM fill:#e1d5e7,stroke:#9673a6,stroke-width:2px
-    style O fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px
+    style O fill:#dae8fc,stroke:#6c8ebf,stroke-width:3px
 ```
 
 ## 6. Implementation Strategy & Resilience
